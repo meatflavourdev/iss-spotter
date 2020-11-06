@@ -11,7 +11,7 @@ const fetchISSTimeURL = "http://api.open-notify.org/iss-pass.json";
  * Input: None
  * Returns: Promise of request for ip data, returned as JSON string
  */
-const fetchMyIP = function () {
+const fetchMyIP = function() {
   return request(fetchIPURL);
 };
 
