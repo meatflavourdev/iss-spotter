@@ -1,6 +1,6 @@
 // index.js
-const humanizeDuration = require("humanize-duration");
 const { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes } = require('./iss');
+const { printPassTimes } = require("./printPassTimes");
 
 fetchMyIP((error, ip) => {
   if (error) {
@@ -20,11 +20,7 @@ fetchMyIP((error, ip) => {
         return;
       }
       // console.log('Returned Flyover Data:' , data);
-      for (const flyover of data) {
-        const timeString = new Date(flyover.risetime * 1000).toString();
-        console.log(`Next pass at ${timeString} for ${humanizeDuration(flyover.duration * 1000)}!`);
-      }
+      printPassTimes(data);
     });
   });
 });
-
