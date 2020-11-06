@@ -80,7 +80,6 @@ const fetchCoordsByIP = function(ip, callback) {
 const fetchISSFlyOverTimes = function(coords, callback) {
   const queryString = new URLSearchParams(coords).toString();
   const URL = fetchISSTimeURL + '?' + queryString;
-  console.log(URL);
 
   request(URL, (error, response, body) => {
     if (error) {
