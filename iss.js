@@ -1,8 +1,9 @@
 // iss.js
 const request = require("request");
 
-// API URL
-const URL = "https://api.ipify.org/?format=json";
+// API URLs
+const fetchIPURL = "https://api.ipify.org/?format=json";
+const fetchCoordsURL = "http://ip-api.com/json/";
 
 /**
  * Makes a single API request to retrieve the user's IP address.
@@ -12,21 +13,46 @@ const URL = "https://api.ipify.org/?format=json";
  *   - The IP address as a string (null if error). Example: "162.245.144.188"
  */
 const fetchMyIP = function(callback) {
-  request(URL, (error, response, body) => {
-    // error can be set if invalid domain, user is offline, etc.
+  request(fetchIPURL, (error, response, body) => {
     if (error) {
       callback(error, null);
       return;
     }
-    // if non-200 status, assume server error
+    // Request returned non-200 status-- assume server error
     if (response.statusCode !== 200) {
       const msg = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
       callback(Error(msg), null);
       return;
     }
     const data = JSON.parse(body);
+    // Success assumed-- return IP address
     callback(null, data.ip);
   });
 };
 
-module.exports = { fetchMyIP };
+const fetchCoordsByIP = function(ip, callback) {
+  request(fetchCoordsURL + ip, (error, response, body) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    // Request returned non-200 status-- assume server error
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching IP Coords. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
+    }
+    // API returned failed response
+    const data = JSON.parse(body);
+    if (data.status === "fail") {
+      callback(Error(data.message), null);
+    }
+    // Success-- return coords
+    callback(null, {
+      latitude: data.lat,
+      longitude: data.lon,
+    });
+  });
+};
+
+module.exports = { fetchMyIP, fetchCoordsByIP };
